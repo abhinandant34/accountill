@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {useDispatch} from 'react-redux'
-import styles from './Clients.module.css'
+import React, {useState } from 'react';
+import { useDispatch } from 'react-redux'
+import styles from '../Clients/Clients.module.css'
 // import moment from 'moment'
 import PropTypes from 'prop-types';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -21,11 +21,11 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import Container from '@material-ui/core/Container'
 import DeleteOutlineRoundedIcon from '@material-ui/icons/DeleteOutlineRounded';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
-import {Button} from '@material-ui/core';
-import {useSnackbar} from 'react-simple-snackbar'
+import { Button } from '@material-ui/core';
+import { useSnackbar } from 'react-simple-snackbar'
 
-import {deleteClient} from '../../actions/clientActions';
-// import clients from '../../clients.json'
+import { deleteTransaction } from '../../actions/transactionActions';
+// import transactions from '../../transactions.json'
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -39,7 +39,7 @@ function TablePaginationActions(props) {
 
     const classes = useStyles1();
     const theme = useTheme();
-    const {count, page, rowsPerPage, onPageChange} = props;
+    const { count, page, rowsPerPage, onPageChange } = props;
 
     const handleFirstPageButtonClick = (event) => {
         onPageChange(event, 0);
@@ -64,24 +64,24 @@ function TablePaginationActions(props) {
                 disabled={page === 0}
                 aria-label="first page"
             >
-                {theme.direction === 'rtl' ? <LastPageIcon/> : <FirstPageIcon/>}
+                {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
             </IconButton>
             <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
-                {theme.direction === 'rtl' ? <KeyboardArrowRight/> : <KeyboardArrowLeft/>}
+                {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
             </IconButton>
             <IconButton
                 onClick={handleNextButtonClick}
                 disabled={page >= Math.ceil(count / rowsPerPage) - 1}
                 aria-label="next page"
             >
-                {theme.direction === 'rtl' ? <KeyboardArrowLeft/> : <KeyboardArrowRight/>}
+                {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
             </IconButton>
             <IconButton
                 onClick={handleLastPageButtonClick}
                 disabled={page >= Math.ceil(count / rowsPerPage) - 1}
                 aria-label="last page"
             >
-                {theme.direction === 'rtl' ? <FirstPageIcon/> : <LastPageIcon/>}
+                {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
             </IconButton>
         </div>
     );
@@ -95,6 +95,7 @@ TablePaginationActions.propTypes = {
 };
 
 
+
 const useStyles2 = makeStyles(theme => ({
     table: {
         minWidth: 500,
@@ -106,16 +107,16 @@ const useStyles2 = makeStyles(theme => ({
 }));
 
 
-const Clients = ({setOpen, setCurrentId, clients}) => {
+const Transactions = ({ setOpen, setCurrentId, transactions }) => {
 
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(clients.length);
-    // eslint-disable-next-line
+    const [rowsPerPage, setRowsPerPage] = useState(transactions.length);
+    // eslint-disable-next-line 
     const [openSnackbar, closeSnackbar] = useSnackbar()
 
     const dispatch = useDispatch()
-    const rows = clients
+    const rows = transactions
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows?.length - page * rowsPerPage);
 
@@ -137,15 +138,8 @@ const Clients = ({setOpen, setCurrentId, clients}) => {
     }
 
 
-    const tableStyle = {
-        width: 160,
-        fontSize: 14,
-        cursor: 'pointer',
-        borderBottom: 'none',
-        padding: '8px',
-        textAlign: 'center'
-    }
-    const headerStyle = {borderBottom: 'none', textAlign: 'center'}
+    const tableStyle = { width: 160, fontSize: 14, cursor: 'pointer', borderBottom: 'none',  padding: '8px', textAlign: 'center' }
+    const headerStyle = { borderBottom: 'none', textAlign: 'center'}
 
 
     return (
@@ -158,8 +152,10 @@ const Clients = ({setOpen, setCurrentId, clients}) => {
                             <TableRow>
                                 <TableCell style={{...headerStyle, width: '10px'}}>Number</TableCell>
                                 <TableCell style={headerStyle}>Name</TableCell>
-                                <TableCell style={headerStyle}>Email</TableCell>
-                                <TableCell style={headerStyle}>Phone</TableCell>
+                                <TableCell style={headerStyle}>Amount</TableCell>
+                                <TableCell style={headerStyle}>Type</TableCell>
+                                <TableCell style={headerStyle}>Date</TableCell>
+                                <TableCell style={headerStyle}>Description</TableCell>
                                 <TableCell style={headerStyle}>Edit</TableCell>
                                 <TableCell style={headerStyle}>Delete</TableCell>
 
@@ -171,41 +167,42 @@ const Clients = ({setOpen, setCurrentId, clients}) => {
                                     ? rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     : rows
                             ).map((row, index) => (
-                                <TableRow key={row._id} styel={{cursor: 'pointer'}}>
+                                <TableRow key={row._id} styel={{cursor: 'pointer'}} >
                                     <TableCell style={{...tableStyle, width: '10px'}}>{index + 1}</TableCell>
-                                    <TableCell style={tableStyle} scope="row"> <Button
-                                        style={{textTransform: 'none'}}> {row.name} </Button></TableCell>
-                                    <TableCell style={tableStyle}>{row.email}</TableCell>
-                                    <TableCell style={tableStyle}>{row.phone}</TableCell>
+                                    <TableCell  style={tableStyle} scope="row" > <Button style={{textTransform: 'none'}}  > {row.name} </Button></TableCell>
+                                    <TableCell style={tableStyle}>{row.amount}</TableCell>
+                                    <TableCell style={tableStyle}>{row.type}</TableCell>
+                                    <TableCell style={tableStyle}>{row.date}</TableCell>
+                                    <TableCell style={tableStyle}>{row.description}</TableCell>
                                     <TableCell style={{...tableStyle, width: '10px'}}>
                                         <IconButton onClick={() => handleEdit(row._id)}>
-                                            <BorderColorIcon style={{width: '20px', height: '20px'}}/>
+                                            <BorderColorIcon style={{width: '20px', height: '20px'}} />
                                         </IconButton>
                                     </TableCell>
                                     <TableCell style={{...tableStyle, width: '10px'}}>
-                                        <IconButton onClick={() => dispatch(deleteClient(row._id, openSnackbar))}>
-                                            <DeleteOutlineRoundedIcon style={{width: '20px', height: '20px'}}/>
+                                        <IconButton onClick={() => dispatch(deleteTransaction(row._id, openSnackbar))}>
+                                            <DeleteOutlineRoundedIcon style={{width: '20px', height: '20px'}} />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
                             ))}
 
                             {emptyRows > 0 && (
-                                <TableRow style={{height: 53 * emptyRows}}>
-                                    <TableCell colSpan={6}/>
+                                <TableRow style={{ height: 53 * emptyRows }}>
+                                    <TableCell colSpan={6} />
                                 </TableRow>
                             )}
                         </TableBody>
                         <TableFooter>
                             <TableRow>
                                 <TablePagination
-                                    rowsPerPageOptions={[5, 10, 25, {label: 'All', value: -1}]}
+                                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                                     colSpan={6}
                                     count={rows.length}
                                     rowsPerPage={rowsPerPage}
                                     page={page}
                                     SelectProps={{
-                                        inputProps: {'aria-label': 'rows per page'},
+                                        inputProps: { 'aria-label': 'rows per page' },
                                         native: true,
                                     }}
                                     onPageChange={handleChangePage}
@@ -221,4 +218,4 @@ const Clients = ({setOpen, setCurrentId, clients}) => {
     );
 }
 
-export default Clients
+export default Transactions

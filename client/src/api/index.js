@@ -6,6 +6,8 @@ const API = axios.create({ baseURL: process.env.REACT_APP_API})
 API.interceptors.request.use((req) => {
     if(localStorage.getItem('profile')) {
         req.headers.authorization = `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`
+
+        // which browser the user is using
     }
 
     return req
@@ -24,6 +26,15 @@ export const addClient =( client ) => API.post('/clients', client)
 export const updateClient = (id, updatedClient) => API.patch(`/clients/${id}`, updatedClient)
 export const deleteClient =(id) => API.delete(`/clients/${id}`)
 export const fetchClientsByUser = (searchQuery) => API.get(`/clients/user?searchQuery=${searchQuery.search}`);
+
+export const fetchTransaction = (id) => API.get(`/transactions/${id}`);
+export const fetchTransactions = () => API.get(`/transactions/get`);
+export const fetchTransactionsWithSearch = (searchQuery) => API.get(`/transactions/get?searchQuery=karuna`);
+
+export const addTransaction =( transaction ) => API.post('/transactions', transaction)
+export const updateTransaction = (id, updatedTransaction) => API.patch(`/transactions/${id}`, updatedTransaction)
+export const deleteTransaction =(id) => API.delete(`/transactions/${id}`)
+export const fetchTransactionsByUser = (searchQuery) => API.get(`/transactions/user?searchQuery=${searchQuery.search}`);
 
 
 export const signIn =(formData)=> API.post('/users/signin', formData)

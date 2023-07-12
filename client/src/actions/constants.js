@@ -1,3 +1,4 @@
+export const ACCOUNT_NAMES = ["Karuna Shukla", "Amit Yadav"];
 
 export const FETCH_ALL = "FETCH_ALL"
 export const ADD_NEW = "ADD_NEW"
@@ -5,6 +6,12 @@ export const UPDATE = "UPDATE"
 export const DELETE = "DELETE"
 export const GET_INVOICE = "GET_INVOICE"
 export const FETCH_INVOICE_BY_USER = "FETCH_INVOICE_BY_USER"
+
+export const GET_TRANSACTION = "GET_TRANSACTION"
+export const ALL_TRANSACTIONS = "ALL_TRANSACTIONS"
+export const UPDATE_TRANSACTION = "UPDATE_TRANSACTION"
+export const DELETE_TRANSACTION = "DELETE_TRANSACTION"
+export const ADD_NEW_TRANSACTION = "ADD_NEW_TRANSACTION"
 
 
 export const ALL_CLIENTS = "ALL_CLIENTS"

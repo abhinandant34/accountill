@@ -70,7 +70,7 @@ const TransactionList = () => {
 
     return (
         <div>
-            {/*<TransactionSearch/>*/}
+            {/* <TransactionSearch/> */}
             <AddTransaction
                 open={open}
                 setOpen={setOpen}

@@ -7,6 +7,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import AddClient from '../Invoice/AddClient';
 import AddTransaction from "../Transactions/AddTransaction";
+import UploadFile from '../Transactions/UploadFile';
 
 
 const FabButton = () => {
@@ -15,6 +16,7 @@ const FabButton = () => {
     const mainButtonStyles = {backgroundColor: '#1976D2'}
     const [open, setOpen] = useState(false)
     const [openTransactionModal, setOpenTransactionModal] = useState(false)
+    const [openUploadFile,setOpenUploadFile] = useState(false)
 
 
     // if(location.pathname === '/invoice') return null
@@ -23,6 +25,8 @@ const FabButton = () => {
         <div>
             <AddClient setOpen={setOpen} open={open}/>
             <AddTransaction setOpen={setOpenTransactionModal} open={openTransactionModal}/>
+            <UploadFile setOpen={setOpenUploadFile} open={openUploadFile}/>
+
             <Fab
                 mainButtonStyles={mainButtonStyles}
                 icon={<AddIcon/>}
@@ -51,6 +55,13 @@ const FabButton = () => {
                     onClick={() => setOpenTransactionModal((prev) => !prev)}
                 >
                     <PersonAddIcon/>
+                </Action>
+
+                <Action
+                    text="Upload File"
+                    onClick={() => setOpenUploadFile((prev) => !prev)}
+                >
+                    <CreateIcon/>
                 </Action>
 
             </Fab>

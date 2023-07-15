@@ -10,6 +10,7 @@ import {
     FETCH_CLIENTS_BY_USER,
     ADD_NEW_CLIENT, UPDATE_CLIENT, DELETE_CLIENT, FETCH_ALL
 } from './constants'
+import transitions from '@material-ui/core/styles/transitions';
 
 
 export const getTransaction = (id) => async (dispatch) => {
@@ -138,4 +139,35 @@ export const deleteTransaction =(id, openSnackbar) => async (dispatch) => {
     } catch (error) {
         console.log(error)
     }
+}
+
+export const TotalCredit=(transactions)=>{
+    const creditTransactions = transactions.filter(
+        (transaction) => transaction.type === "Credit"
+      );
+      let TotalCredit = 0;
+      creditTransactions.forEach((credit) => {
+        TotalCredit = TotalCredit + credit.amount;
+      });
+  
+      return TotalCredit;
+}
+export const TotalDebit=(transactions)=>{
+    const DebitTransactions = transactions.filter(
+        (transaction) => transaction.type === "Debit"
+      );
+      let TotalDebit = 0;
+      DebitTransactions.forEach((debit) => {
+        TotalDebit = TotalDebit + debit.amount;
+      });
+  
+      return TotalDebit;
+}
+
+export const TotalTransactions=(transactions)=>{
+    return TotalCredit(transactions)+TotalDebit(transactions)
+}
+
+export const TotalBalance=(transactions)=>{
+    return TotalCredit(transactions)-TotalDebit(transactions)
 }

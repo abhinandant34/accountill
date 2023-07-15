@@ -27,6 +27,7 @@ import {
   deleteTransaction,
   downloadTransactions,
 } from "../../actions/transactionActions";
+import TransactionsData from "./TransactionsData";
 // import transactions from '../../transactions.json'
 
 const useStyles1 = makeStyles((theme) => ({
@@ -156,6 +157,7 @@ const Transactions = ({ setOpen, setCurrentId, transactions }) => {
   return (
     <div className={styles.pageLayout}>
       <Container style={{ width: "85%" }}>
+        <TransactionsData transactions={transactions}/>
         <TransactionSearch />
         <TableContainer component={Paper} elevation={0}>
           <Table className={classes.table} aria-label="custom pagination table">

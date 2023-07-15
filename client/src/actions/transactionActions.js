@@ -1,5 +1,5 @@
 import * as api from '../api/index'
-
+import * as XLSX from "xlsx";
 import {
     ADD_NEW,
     UPDATE,
@@ -10,6 +10,7 @@ import {
     FETCH_CLIENTS_BY_USER,
     ADD_NEW_CLIENT, UPDATE_CLIENT, DELETE_CLIENT, FETCH_ALL
 } from './constants'
+import transitions from '@material-ui/core/styles/transitions';
 
 
 export const getTransaction = (id) => async (dispatch) => {
@@ -27,7 +28,8 @@ export const getTransaction = (id) => async (dispatch) => {
 export const getTransactionsWithSearch =(payload) => async (dispatch) => {
     try {
         dispatch({ type: START_LOADING })
-        const  { data: { data } } = await api.fetchTransactionsWithSearch("name=karuna")
+        console.log(" the payload is :",payload)
+        const  { data: { data } } = await api.fetchTransactionsWithSearch(payload)
 
         dispatch({ type: FETCH_ALL, payload: {data : data} });
         dispatch({ type: END_LOADING })
@@ -76,6 +78,45 @@ export const createTransaction =(transaction, openSnackbar) => async (dispatch) 
     }
 }
 
+export const uploadTransactionsFile = (file, openSnackbar) => async (dispatch) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    console.log(file);
+    try {
+      const response = await api.uploadTransFile(formData);
+      dispatch({ type: ADD_NEW_CLIENT, payload: response.data });
+      openSnackbar("File uploaded successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+ export const downloadTransactions = async () => {
+    try {
+        const response = await api.fetchTransactions()
+    let transactions=response.data.data
+    console.log(transactions);
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(transactions);
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+      const blob = new Blob([excelBuffer], {
+        type:
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "transactions.xlsx";
+      link.click();
+      console.log("Transactions exported successfully");
+    } catch (error) {
+      console.error("Error exporting transactions:", error);
+    }
+  };
 
 export const updateTransaction =(id, transaction, openSnackbar) => async (dispatch) => {
 
@@ -98,4 +139,35 @@ export const deleteTransaction =(id, openSnackbar) => async (dispatch) => {
     } catch (error) {
         console.log(error)
     }
+}
+
+export const TotalCredit=(transactions)=>{
+    const creditTransactions = transactions.filter(
+        (transaction) => transaction.type === "Credit"
+      );
+      let TotalCredit = 0;
+      creditTransactions.forEach((credit) => {
+        TotalCredit = TotalCredit + credit.amount;
+      });
+  
+      return TotalCredit;
+}
+export const TotalDebit=(transactions)=>{
+    const DebitTransactions = transactions.filter(
+        (transaction) => transaction.type === "Debit"
+      );
+      let TotalDebit = 0;
+      DebitTransactions.forEach((debit) => {
+        TotalDebit = TotalDebit + debit.amount;
+      });
+  
+      return TotalDebit;
+}
+
+export const TotalTransactions=(transactions)=>{
+    return TotalCredit(transactions)+TotalDebit(transactions)
+}
+
+export const TotalBalance=(transactions)=>{
+    return TotalCredit(transactions)-TotalDebit(transactions)
 }

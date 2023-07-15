@@ -17,7 +17,6 @@ import Header from './components/Header/Header';
 import Settings from './components/Settings/Settings';
 import Forgot from './components/Password/Forgot'
 import Reset from './components/Password/Reset'
-import Transactions from "./components/Transactions/Transactions";
 import TransactionList from "./components/Transactions/TransactionList";
 
 function App() {

@@ -1,4 +1,3 @@
-import {ACCOUNT_NAMES} from "../actions/constants";
 import React from "react";
 
 export function toCommas(value) {
@@ -8,6 +7,6 @@ export function toCommas(value) {
 
 export function toOptions(options) {
     return options.map((option) => {
-        return <option value={option}>{option}</option>;
-    })
-}
+      return <option key={option} value={option}>{option}</option>;
+    });
+  }

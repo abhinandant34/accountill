@@ -15,12 +15,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createTransaction,
   updateTransaction,
+  uploadTransactionsFile,
 } from "../../actions/transactionActions";
 import { useSnackbar } from "react-simple-snackbar";
 import moment from "moment";
-import { ACCOUNT_NAMES } from "../../actions/constants";
-import invoice from "../Invoice/Invoice";
-import { toOptions } from "../../utils/utils";
 
 const styles = (theme) => ({
   root: {
@@ -68,17 +66,9 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-const AddTransaction = ({ setOpen, open, currentId, setCurrentId }) => {
+const UploadFile = ({ setOpen, open, currentId, setCurrentId }) => {
   let currentDate = moment().format("YYYY-MM-DD");
   const location = useLocation();
-  const [transactionData, setTransactionData] = useState({
-    name: "",
-    amount: "",
-    type: "",
-    date: currentDate,
-    description: "",
-    userId: "",
-  });
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const dispatch = useDispatch();
   const transaction = useSelector((state) =>
@@ -88,6 +78,7 @@ const AddTransaction = ({ setOpen, open, currentId, setCurrentId }) => {
   );
   // eslint-disable-next-line
   const [openSnackbar, closeSnackbar] = useSnackbar();
+  const [uploadFile,setUploadFile]=useState([]);
 
   useEffect(() => {
     if (transaction) {
@@ -100,40 +91,32 @@ const AddTransaction = ({ setOpen, open, currentId, setCurrentId }) => {
     // setTransactionData({...transactionData, userId: user?.result?._id})
   }, [location]);
 
-  useEffect(() => {
-    var checkId = user?.result?._id;
-    if (checkId !== undefined) {
-      setTransactionData({ ...transactionData, userId: [checkId] });
-    } else {
-      setTransactionData({
-        ...transactionData,
-        userId: [user?.result?.googleId],
-      });
-    }
-  }, [location]);
+//   useEffect(() => {
+//     var checkId = user?.result?._id;
+//     if (checkId !== undefined) {
+//       setTransactionData({ ...transactionData, userId: [checkId] });
+//     } else {
+//       setTransactionData({
+//         ...transactionData,
+//         userId: [user?.result?.googleId],
+//       });
+//     }
+//   }, [location]);
 
-  const handleSubmitTransaction = (e) => {
+  const handleFileUpload = (e) => {
+    const uploadedFile = e.target.files[0];
+    setUploadFile({ ...uploadFile, file: uploadedFile });
+  };
+
+  const handleUpload = (e) => {
     e.preventDefault();
-    if (currentId) {
-      dispatch(updateTransaction(currentId, transactionData, openSnackbar));
-    } else {
-      dispatch(createTransaction(transactionData, openSnackbar));
-    }
-
+    dispatch(uploadTransactionsFile(uploadFile, openSnackbar));
     clear();
     handleClose();
   };
 
   const clear = () => {
     // setCurrentId(null)
-    setTransactionData({
-      name: "",
-      amount: "",
-      type: "",
-      date: currentDate,
-      description: "",
-      userId: "",
-    });
   };
 
   const handleClose = () => {
@@ -176,92 +159,26 @@ const AddTransaction = ({ setOpen, open, currentId, setCurrentId }) => {
             onClose={handleClose}
             style={{ paddingLeft: "20px", color: "white" }}
           >
-            {currentId ? "Edit Transaction" : "Add new Transaction"}
+            {currentId ? "Edit Transaction" : "Upload File"}
           </DialogTitle>
           <DialogContent dividers>
             <div className="customInputs">
-              <select
-                placeholder="Name"
-                style={inputStyle}
-                name="name"
-                onChange={(e) =>
-                  setTransactionData({
-                    ...transactionData,
-                    name: e.target.value,
-                  })
-                }
-                value={transactionData.name || ""} // Set an empty string as the default value
-              >
-                {toOptions(ACCOUNT_NAMES)}
-              </select>
-
-              <input
-                placeholder="Amount"
-                style={inputStyle}
-                name="amount"
-                type="number"
-                onChange={(e) =>
-                  setTransactionData({
-                    ...transactionData,
-                    amount: e.target.value,
-                  })
-                }
-                value={transactionData.amount}
-              />
-
-              <select
-                placeholder="Type"
-                style={inputStyle}
-                name="type"
-                onChange={(e) =>
-                  setTransactionData({
-                    ...transactionData,
-                    type: e.target.value,
-                  })
-                }
-                value={transactionData.type}
-              >
-                <option value="">Choose Type</option>
-                <option value="credit">Credit</option>
-                <option value="debit">Debit</option>
-              </select>
-
-              <input
-                placeholder="Date"
-                style={inputStyle}
-                name="date"
-                type="date"
-                onChange={(e) =>
-                  setTransactionData({
-                    ...transactionData,
-                    date: e.target.value,
-                  })
-                }
-                value={transactionData.date}
-              />
-
               <input
                 placeholder="Description"
                 style={inputStyle}
-                name="description"
-                type="textarea"
-                onChange={(e) =>
-                  setTransactionData({
-                    ...transactionData,
-                    description: e.target.value,
-                  })
-                }
-                value={transactionData.description}
+                name="file"
+                type="file"
+                onChange={handleFileUpload}
               />
             </div>
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={handleSubmitTransaction}
+              onClick={handleUpload}
               variant="contained"
               style={{ marginRight: "25px" }}
             >
-              Add Transaction
+              Upload File
             </Button>
           </DialogActions>
         </Dialog>
@@ -270,4 +187,4 @@ const AddTransaction = ({ setOpen, open, currentId, setCurrentId }) => {
   );
 };
 
-export default AddTransaction;
+export default UploadFile;
